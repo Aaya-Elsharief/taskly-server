@@ -4,10 +4,10 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  NotFoundException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { ErrorResponse } from '../responses/error-response';
+import { ResponseErrors } from '../responses/constants';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -24,35 +24,49 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log('httpStatus: ', httpStatus);
 
-    const responseBody = {
-      statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
-    };
     let myRes = null;
 
     switch (httpStatus) {
       case HttpStatus.NOT_FOUND:
-        console.log(HttpStatus.NOT_FOUND);
-        if (exception instanceof HttpException) {
-          myRes = new NotFoundException(exception.getResponse());
-        } else {
-          myRes = new NotFoundException();
-        }
-        httpAdapter.reply(ctx.getResponse(), myRes.response, httpStatus);
+        myRes = new ErrorResponse(
+          HttpStatus.NOT_FOUND,
+          ResponseErrors.NOT_FOUND,
+          exception instanceof HttpException ? exception.getResponse() : null,
+        );
+        break;
+
+      case HttpStatus.BAD_REQUEST:
+        myRes = new ErrorResponse(
+          HttpStatus.BAD_REQUEST,
+          ResponseErrors.BAD_REQUEST,
+          exception instanceof HttpException ? exception.getResponse() : null,
+        );
+        break;
+
+      case HttpStatus.UNAUTHORIZED:
+        myRes = new ErrorResponse(
+          HttpStatus.UNAUTHORIZED,
+          ResponseErrors.UNAUTHORIZED,
+          exception instanceof HttpException ? exception.getResponse() : null,
+        );
+        break;
+
+      case HttpStatus.FORBIDDEN:
+        myRes = new ErrorResponse(
+          HttpStatus.FORBIDDEN,
+          ResponseErrors.FORBIDDEN,
+          exception instanceof HttpException ? exception.getResponse() : null,
+        );
         break;
 
       default:
-        if (exception instanceof HttpException) {
-          myRes = new InternalServerErrorException(exception.getResponse());
-        } else {
-          myRes = new InternalServerErrorException();
-        }
-        httpAdapter.reply(ctx.getResponse(), myRes.response, httpStatus);
-        break;
+        myRes = new ErrorResponse(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          ResponseErrors.INTERNAL_SERVER_ERROR,
+          exception instanceof HttpException ? exception.getResponse() : null,
+        );
     }
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+    httpAdapter.reply(ctx.getResponse(), myRes.getResponseObject(), httpStatus);
   }
 }
