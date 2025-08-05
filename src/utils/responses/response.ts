@@ -2,8 +2,8 @@ export interface IResponseModel<T> {
   statusCode: number;
   status: boolean;
   error: string;
-  data: T;
-  feedback: T;
+  data: T; // Main response payload
+  feedback: T; // Additional metadata or user feedback
 }
 
 export class ResponseModel<T> implements IResponseModel<T> {
@@ -16,44 +16,18 @@ export class ResponseModel<T> implements IResponseModel<T> {
   constructor(
     statusCode: number,
     status: boolean,
-    error: string,
-    data?: any,
-    feedback?: any,
+    error = '',
+    data: T = {} as T,
+    feedback: T = {} as T,
   ) {
     this.statusCode = statusCode;
     this.status = status;
-    this.error = error || '';
-    this.data = data || {};
-    this.feedback = feedback || {};
-  }
-
-  getStatusCode() {
-    return this.statusCode;
-  }
-
-  getStatus() {
-    return this.status;
-  }
-
-  getError() {
-    return this.error;
-  }
-
-  getData() {
-    return this.data;
-  }
-
-  getFeedback() {
-    return this.feedback;
+    this.error = error;
+    this.data = data;
+    this.feedback = feedback;
   }
 
   getResponseObject() {
-    return {
-      statusCode: this.statusCode,
-      status: this.status,
-      error: this.error,
-      data: this.data,
-      feedback: this.feedback,
-    };
+    return { ...this };
   }
 }
