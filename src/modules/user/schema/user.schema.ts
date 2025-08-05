@@ -23,6 +23,15 @@ export class User {
   @Prop({ type: String, required: true })
   email: string;
 
+  @Prop({ type: String, required: true })
+  mobileNumber: string;
+
+  @Prop({ type: Boolean, default: false })
+  isVerified: boolean;
+
+  @Prop({ type: String, required: true })
+  password: string;
+
   @Prop({ type: Date, default: null })
   deletedAt?: Date;
 }
