@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { SuccessResponse } from 'src/utils/responses/success-response';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -16,6 +17,7 @@ export class UserController {
   @ApiTags('Create User')
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+    const response = await this.userService.create(createUserDto);
+    return new SuccessResponse(response);
   }
 }
