@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from 'env/env.configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -14,7 +14,12 @@ import { MongooseModule } from '@nestjs/mongoose';
       envFilePath: `${process.cwd()}/env/${process.env.NODE_ENV}.env`,
       load: [EnvironmentVariables],
     }),
-    MongooseModule.forRoot(EnvironmentVariables().mongodb.connectionUrl),
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get('mongodb.connectionUrl'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,4 @@
-export enum ResponseErrors {
+export enum ResponseStatus {
   BAD_REQUEST = 'BadRequest',
   TOO_MANY_REQUESTS = 'TooManyRequests',
   NOT_FOUND = 'NotFound',
