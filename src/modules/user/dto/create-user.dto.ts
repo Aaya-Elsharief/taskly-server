@@ -2,7 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { MobileIsExist } from '../custom-validation-rules/mobile-number-exist.validator';
 import { IsValidMobile } from '../custom-validation-rules/mobile-number.validator';
-import { PasswordStrength } from '../custom-validation-rules/password-strngth.validator';
+import { PasswordStrength } from '../custom-validation-rules/password-strength.validator';
+import { EmailIsExist } from '../custom-validation-rules/email-exist.validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -32,13 +33,13 @@ export class CreateUserDto {
     type: String,
   })
   @IsNotEmpty()
-  @IsString()
   @IsEmail()
+  @EmailIsExist()
   email: string;
 
   @ApiProperty({
     description: 'The mobile number in format: countryCode-areaCode-number',
-    example: '1-555-1234567',
+    example: '966-50-2388427',
     required: true,
     type: String,
   })

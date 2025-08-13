@@ -17,16 +17,10 @@ export class PasswordStrengthConstraint
       return false;
     }
 
-    // Check individual password requirements
-    const hasLowercase = /[a-z]/.test(value);
-    const hasUppercase = /[A-Z]/.test(value);
-    const hasDigit = /\d/.test(value);
-    const hasSpecialChar = /[@$!%*?&]/.test(value);
-    const hasMinLength = value.length >= 8;
-
-    return (
-      hasLowercase && hasUppercase && hasDigit && hasSpecialChar && hasMinLength
-    );
+    // Single regex with lookaheads for all password requirements
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    return passwordRegex.test(value);
   }
   defaultMessage(validationArguments?: ValidationArguments): string {
     return JSON.stringify({

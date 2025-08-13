@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export const USER_COLLECTION_NAME = 'user';
 
@@ -29,6 +29,7 @@ export class User {
   @Prop({ type: Boolean, default: false })
   isVerified: boolean;
 
+  // Stores hashed password, never plain text
   @Prop({ type: String, required: true })
   password: string;
 
