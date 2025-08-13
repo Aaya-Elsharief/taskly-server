@@ -24,9 +24,22 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Taskly API')
-    .setDescription('The API documentation for Taskly application')
-    .setVersion('1.0')
-    .addBearerAuth()
+    .setDescription(
+      'Task management application API with user management, authentication, and task operations',
+    )
+    .setVersion('1.0.0')
+    .addTag('user', 'User management operations')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .build();
 
   const documentFactory = SwaggerModule.createDocument(app, config);

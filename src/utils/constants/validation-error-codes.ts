@@ -40,7 +40,7 @@ export const ValidationErrorCodes = {
     en: 'Must be one of the allowed values',
     ar: 'يجب أن يكون أحد القيم المسموح بها',
   },
-  emailExists: {
+  emailIsExist: {
     en: 'Email already exists',
     ar: 'الايميل موجود بالفعل',
   },
