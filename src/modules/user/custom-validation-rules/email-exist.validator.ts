@@ -8,13 +8,15 @@ import {
 } from 'class-validator';
 import { ValidationErrorCodes } from 'src/utils/constants/validation-error-codes';
 import { UserService } from '../service/user.service';
+import { InternalServerErrorException } from 'src/utils/exception/internal-server-error-exception';
+import { ErrorCodes } from 'src/utils/constants/error-codes';
 
-@ValidatorConstraint({ name: 'mobileIsExist', async: true })
+@ValidatorConstraint({ name: 'emailIsExist', async: true })
 @Injectable()
-export class MobileIsExistConstraint implements ValidatorConstraintInterface {
+export class EmailIsExistConstraint implements ValidatorConstraintInterface {
   constructor(private userService: UserService) {}
 
-  // Validates that the mobile number doesn't already exist in the database
+  // Validates that the email doesn't already exist in the database
   public async validate(value: string, args: ValidationArguments) {
     if (!value) {
       return false;
@@ -22,31 +24,31 @@ export class MobileIsExistConstraint implements ValidatorConstraintInterface {
 
     try {
       const document = await this.userService.getOneUserBy({
-        mobileNumber: value,
+        email: value,
       });
 
       if (document) {
-        return false; // Mobile number already exists
+        return false; // Email already exists
       }
 
       return true;
     } catch (error) {
-      return false; // Fail validation on database error
+      throw new InternalServerErrorException(ErrorCodes.INTERNAL_SERVER_ERROR);
     }
   }
   defaultMessage(args: ValidationArguments) {
-    return JSON.stringify(ValidationErrorCodes['mobileIsExist']);
+    return JSON.stringify(ValidationErrorCodes['emailIsExist']);
   }
 }
 
-export function MobileIsExist(validationOptions?: ValidationOptions) {
+export function EmailIsExist(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: MobileIsExistConstraint,
+      validator: EmailIsExistConstraint,
     });
   };
 }

@@ -25,10 +25,18 @@ export class UserRepository {
     }
   }
 
-  async findOneBy(searchCriteria: UserSearchCriteria): Promise<User> {
+  async findOneBy(
+    searchCriteria: UserSearchCriteria,
+    projectSensitiveFields = true,
+  ): Promise<User> {
     try {
-      const documentRef = await this.userModel.findOne(searchCriteria).exec();
-      return documentRef;
+      let query = this.userModel.findOne(searchCriteria);
+
+      if (projectSensitiveFields) {
+        query = query.select('-password');
+      }
+
+      return await query.exec();
     } catch (error) {
       throw new InternalServerErrorException(ErrorCodes.INTERNAL_SERVER_ERROR);
     }

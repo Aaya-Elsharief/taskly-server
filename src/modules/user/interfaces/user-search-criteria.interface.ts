@@ -3,4 +3,5 @@ export interface UserSearchCriteria {
   username?: string;
   mobileNumber?: string;
   isVerified?: boolean;
+  _id?: string;
 }

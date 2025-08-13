@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -7,6 +7,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { ErrorCodes } from 'src/utils/constants/error-codes';
 import { ValidationErrorCodes } from 'src/utils/constants/validation-error-codes';
 
 @ValidatorConstraint({ name: 'isValidMobile', async: false })
@@ -42,8 +43,7 @@ export class IsValidMobileConstraint implements ValidatorConstraintInterface {
       const parsedNumber = phoneUtil.parseAndKeepRawInput(fullNumber, null);
       return phoneUtil.isValidNumber(parsedNumber);
     } catch (error) {
-      console.error('Error validating mobile number:', error);
-      return false;
+      throw new InternalServerErrorException(ErrorCodes.INTERNAL_SERVER_ERROR);
     }
   }
 

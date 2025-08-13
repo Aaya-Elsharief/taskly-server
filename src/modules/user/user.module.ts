@@ -1,26 +1,35 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './service/user.service';
 import { UserController } from './controller/user.controller';
-import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { USER_COLLECTION_NAME, UserSchema } from './schema/user.schema';
-import { Connection } from 'mongoose';
 import { UserRepository } from './repository/repository';
 import { IsValidMobileConstraint } from './custom-validation-rules/mobile-number.validator';
 import { MobileIsExistConstraint } from './custom-validation-rules/mobile-number-exist.validator';
-import { PasswordStrengthConstraint } from './custom-validation-rules/password-strngth.validator';
+import { PasswordStrengthConstraint } from './custom-validation-rules/password-strength.validator';
+import { EmailIsExistConstraint } from './custom-validation-rules/email-exist.validator';
+import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { LocalStrategy } from './auth/strategies/local.strategy';
 
 @Module({
   imports: [
-    MongooseModule.forFeatureAsync([
+    MongooseModule.forFeature([
       {
         name: USER_COLLECTION_NAME,
-        useFactory: async (nativeMongooseConnection: Connection) => {
-          const schema = UserSchema;
-          return schema;
-        },
-        inject: [getConnectionToken()],
+        schema: UserSchema,
       },
     ]),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('jwt.secret'),
+        signOptions: {
+          expiresIn: configService.get('jwt.expiresIn'),
+          algorithm: configService.get('jwt.algorithm'),
+        },
+      }),
+    }),
   ],
   controllers: [UserController],
   providers: [
@@ -29,6 +38,8 @@ import { PasswordStrengthConstraint } from './custom-validation-rules/password-s
     IsValidMobileConstraint,
     MobileIsExistConstraint,
     PasswordStrengthConstraint,
+    EmailIsExistConstraint,
+    LocalStrategy,
   ],
   exports: [UserService],
 })
