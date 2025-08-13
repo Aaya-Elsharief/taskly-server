@@ -58,4 +58,11 @@ export const ErrorCodes: Record<string, ErrorCode> = {
       ar: 'خطأ داخلي في الخادم',
     },
   },
+  USER_NOT_VERIFIED: {
+    code: 'USER_NOT_VERIFIED',
+    message: {
+      en: 'User not verified',
+      ar: 'المستخدم غير مفعل',
+    },
+  },
 };
