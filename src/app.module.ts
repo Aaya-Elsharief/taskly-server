@@ -5,10 +5,12 @@ import { UserModule } from './modules/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from 'env/env.configuration';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TokenModule } from './modules/token/token.module';
 
 @Module({
   imports: [
     UserModule,
+    TokenModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `${process.cwd()}/env/${process.env.NODE_ENV}.env`,
