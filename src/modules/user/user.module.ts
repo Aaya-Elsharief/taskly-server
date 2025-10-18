@@ -3,7 +3,7 @@ import { UserService } from './service/user.service';
 import { UserController } from './controller/user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { USER_COLLECTION_NAME, UserSchema } from './schema/user.schema';
-import { UserRepository } from './repository/repository';
+import { UserRepository } from './repository/user.repository';
 import { IsValidMobileConstraint } from './custom-validation-rules/mobile-number.validator';
 import { MobileIsExistConstraint } from './custom-validation-rules/mobile-number-exist.validator';
 import { PasswordStrengthConstraint } from './custom-validation-rules/password-strength.validator';
@@ -11,9 +11,11 @@ import { EmailIsExistConstraint } from './custom-validation-rules/email-exist.va
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './auth/strategies/local.strategy';
+import { TokenModule } from '../token/token.module';
 
 @Module({
   imports: [
+    TokenModule,
     MongooseModule.forFeature([
       {
         name: USER_COLLECTION_NAME,

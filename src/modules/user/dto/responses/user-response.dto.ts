@@ -66,4 +66,20 @@ export class UserResponseDto {
 
   @Exclude()
   password?: string;
+
+  @Expose()
+  @ApiProperty({
+    description: 'The refresh token for the user',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    type: String,
+  })
+  refreshToken: string;
+
+  @Expose()
+  @ApiProperty({
+    description: 'The access token for the user',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    type: String,
+  })
+  accessToken: string;
 }
