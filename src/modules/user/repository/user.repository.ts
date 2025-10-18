@@ -19,7 +19,7 @@ export class UserRepository {
       if (projectSensitiveFields) {
         if (documentRef['_doc'].password) delete documentRef['_doc'].password;
       }
-      return documentRef;
+      return documentRef.toObject();
     } catch (error) {
       throw new InternalServerErrorException(ErrorCodes.INTERNAL_SERVER_ERROR);
     }

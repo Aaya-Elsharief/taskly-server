@@ -12,6 +12,8 @@ import { SuccessResponse } from 'src/utils/responses/success-response';
 import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { UserResponseDto } from '../dto/responses/user-response.dto';
 import { LoginResponseDto } from '../dto/responses/login-response.dto';
+import { DeviceSource } from '../custom-decorator/device-source.decorator';
+import { SourceEnum } from 'src/modules/token/constants/token.enum';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -28,8 +30,11 @@ export class UserController {
     type: UserResponseDto,
   })
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<SuccessResponse> {
-    const response = await this.userService.create(createUserDto);
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @DeviceSource() deviceSource: SourceEnum,
+  ): Promise<SuccessResponse> {
+    const response = await this.userService.create(createUserDto, deviceSource);
     return new SuccessResponse(response);
   }
 
@@ -38,7 +43,7 @@ export class UserController {
       type: 'object',
       properties: {
         email: { type: 'string', example: 'user@example.com' },
-        password: { type: 'string', example: 'yourpassword' },
+        password: { type: 'string', example: 'yourPassword' },
       },
       required: ['email', 'password'],
     },
